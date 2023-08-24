@@ -6,7 +6,11 @@ from .utils import send_otp
 
 from .models import UserModel
 
-
+class UserLoginSerializer(serializers.ModelSerializer):
+  phone_number = serializers.CharField(max_length=10)
+  class Meta:
+    model = UserModel
+    fields = ['phone_number', 'password']
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -14,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     Used in POST and GET
     """
-
+    # otp = serializers.CharField(write_only=True, required=False)  # For OTP verification
     password1 = serializers.CharField(
         write_only=True,
         min_length=settings.MIN_PASSWORD_LENGTH,
@@ -41,7 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
             "name",
             "phone_number",
             "password1",
-            "password2"
+            "password2",
         )
         read_only_fields = ("id",)
 
@@ -76,6 +80,9 @@ class UserSerializer(serializers.ModelSerializer):
         send_otp(validated_data["phone_number"], otp)
         return user
 
+class VerifyCodeSerializer(serializers.Serializer):
+    verification_code = serializers.CharField(max_length=6)
+    phone_number = serializers.CharField()
 
 
 class PhonePasswordResetRequestSerializer(serializers.ModelSerializer):

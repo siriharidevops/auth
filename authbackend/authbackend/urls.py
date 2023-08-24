@@ -17,17 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt import views as jwt_views
 
 from account import views
-
-router = DefaultRouter()
-router.register("user", views.UserViewSet, basename="user")
+# router = DefaultRouter()
+# router.register("user", views.UserViewSet, basename="user")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('phone-password-reset/', views.PhonePasswordResetRequestView.as_view(), name='phone_password_reset_request'),
-    path('phone-password-reset/confirm/', views.PhonePasswordResetConfirmView.as_view(), name='phone_password_reset_confirm'),
+    path('user/',include('account.urls')),
+    path('api/token/refresh/',jwt_views.TokenRefreshView.as_view(),name ='token_refresh'),
+
+    # path('api-auth/', include('rest_framework.urls')),
+    # path('phone-password-reset/', views.PhonePasswordResetRequestView.as_view(), name='phone_password_reset_request'),
+    # path('phone-password-reset/confirm/', views.PhonePasswordResetConfirmView.as_view(), name='phone_password_reset_confirm'),
+    # path("verify",views.VerifyCodeView.as_view())
 
     ]
 
-urlpatterns += router.urls
+# urlpatterns += router.urls
